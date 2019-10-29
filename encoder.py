@@ -17,50 +17,50 @@ class ArithmeticEncoder:
         for symbol in symbols:
             symbol_count = self.content.count(symbol)
             symbol_probability = Fraction(symbol_count, content_len)
-            pairs.append((symbol, symbol_probability))
+            pairs.append([symbol, symbol_probability])
 
         pairs = sorted(pairs, key=lambda x: x[1], reverse=True)
 
         return pairs
 
     @staticmethod
-    def get_list_elements_product_denominator(input_list):
-        return reduce((lambda x, y: x * y), input_list).denominator
-
-    @staticmethod
-    def get_quantized_floor_probability(probability):
+    def get_floor_quantized_probability(probability):
         floor_exponent = abs(math.floor(math.log2(probability)))
         return Fraction(1, 2**floor_exponent)
 
+    def get_floor_quantized_probabilities(self, symbol_probabilities):
+        pairs = []
+
+        for symbol, symbol_probability in symbol_probabilities:
+            floor_quantized_probability = self.get_floor_quantized_probability(symbol_probability)
+            pairs.append([symbol, floor_quantized_probability])
+
+        return pairs
+
     @staticmethod
-    def get_quantized_ceil_probability(probability):
-        ceil_exponent = abs(math.ceil(math.log2(probability)))
-        return Fraction(1, 2**ceil_exponent)
+    def get_probabilities_sum(symbol_probabilities):
+        return sum([x[1] for x in symbol_probabilities])
+
+    def optimize_probabilities(self, symbol_probabilities):
+        probabilities_sum = self.get_probabilities_sum(symbol_probabilities)
+
+        while probabilities_sum < 1:
+            stock = Fraction(1, 1) - probabilities_sum
+            stock_floor = self.get_floor_quantized_probability(stock)
+
+            double_candidate = [*filter(lambda x: x[1] <= stock_floor, symbol_probabilities)][0]
+            double_candidate_index = symbol_probabilities.index(double_candidate)
+            symbol_probabilities[double_candidate_index][1] *= 2
+            probabilities_sum = self.get_probabilities_sum(symbol_probabilities)
+
+        return symbol_probabilities
 
     def get_optimal_quantized_probabilities(self):
         symbol_probabilities = self.get_symbol_probabilities()
-        quantized_probability_pairs = []
-        symbols = []
+        symbol_probabilities = self.get_floor_quantized_probabilities(symbol_probabilities)
+        symbol_probabilities = self.optimize_probabilities(symbol_probabilities)
 
-        for symbol, symbol_probability in symbol_probabilities:
-            probability_floor = self.get_quantized_floor_probability(symbol_probability)
-            probability_ceil = self.get_quantized_ceil_probability(symbol_probability)
-            quantized_probability_pairs.append((probability_floor, probability_ceil))
-            symbols.append(symbol)
-
-        quantized_probabilities_cartesian_product = it.product(*quantized_probability_pairs)
-
-        quantized_probabilities_cartesian_product = filter(
-            lambda p: sum(p) <= Fraction(1, 1),
-            quantized_probabilities_cartesian_product
-        )
-
-        optimal_quantized_probability = sorted(
-            quantized_probabilities_cartesian_product,
-            key=self.get_list_elements_product_denominator,
-        )[0]
-
-        return zip(symbols, optimal_quantized_probability)
+        return symbol_probabilities
 
     def get_symbols_ranges(self):
         pairs = self.get_optimal_quantized_probabilities()
