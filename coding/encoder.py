@@ -94,3 +94,4 @@ class ArithmeticEncoder:
             current_range = (new_start_range, new_stop_range)
 
         return current_range[0], len(self.content), symbols_ranges
+
