@@ -1,24 +1,24 @@
 from decoder import ArithmeticalDecoder
 from encoder import ArithmeticEncoder
+from reader import FileReader
+from writer import FileWriter
 
 
 def main():
-    # 1.  TODO: Add numba support
-    # 2.  TODO: Replace with open('hamlet.txt').read()
+    content = open('hamlet.txt', 'rb').read()
+    ae = ArithmeticEncoder(content)
+    content_fraction, length, symbols_ranges = ae.encode()
 
-    paragraph = 'ACBDEABCDABCACA'
-    ae = ArithmeticEncoder(paragraph)
-    lower_range, length, symbols_ranges = ae.encode()
-    print(paragraph)
+    fw = FileWriter('hamlet.ae')
+    fw.write(content_fraction, length, symbols_ranges)
 
-    print()
-    print('\n'.join(str(lower_range).split('/')))
-    print()
-    print(symbols_ranges)
+    fr = FileReader('hamlet.ae')
+    content_fraction, length, symbols_ranges = fr.read()
 
-    ad = ArithmeticalDecoder(lower_range, length, symbols_ranges)
+    ad = ArithmeticalDecoder(content_fraction, length, symbols_ranges)
     decoded_content = ad.decode()
-    print(decoded_content)
+
+    open('HAMLET.txt', 'wb').write(decoded_content)
 
 
 if __name__ == '__main__':

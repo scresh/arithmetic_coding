@@ -2,36 +2,32 @@ from fractions import Fraction
 
 
 class ArithmeticalDecoder:
-    def __init__(self, lower_range, length, symbols_ranges):
-        self.lower_range = lower_range
-        self.length = length
-        self.symbols_ranges = symbols_ranges
+    def __init__(self, content_fraction, content_length, pairs_dict):
+        self.content_fraction = content_fraction
+        self.content_length = content_length
+        self.pairs_dict = pairs_dict
+
+    def get_new_pair(self, current_range):
+        current_range_start, current_range_end = current_range
+        current_range_delta = current_range_end - current_range_start
+
+        for symbol, symbol_range in self.pairs_dict.items():
+            symbol_range_start, symbol_range_end = symbol_range
+
+            new_range_start = current_range_start + (current_range_delta * symbol_range_start)
+            new_range_end = current_range_start + (current_range_delta * symbol_range_end)
+
+            if new_range_start <= self.content_fraction < new_range_end:
+                return symbol, (new_range_start, new_range_end)
 
     def decode(self):
-        content = ''
+        content = bytearray()
         current_range = (Fraction(0, 1), Fraction(1, 1))
 
-        for _ in range(self.length):
-            current_start_range, current_stop_range = current_range
-            current_delta = current_stop_range - current_start_range
+        for _ in range(self.content_length):
+            new_symbol, new_range = self.get_new_pair(current_range)
 
-            try:
-                symbol_range = [*filter(
-                    lambda x:
-                    x[1][0] * current_delta <= self.lower_range - current_start_range < x[1][1] * current_delta,
-                    self.symbols_ranges)][0]
-            except IndexError:
-                return content
-
-            symbol = symbol_range[0]
-
-            symbol_start_range, symbol_stop_range = symbol_range[1]
-
-            new_start_range = current_start_range + symbol_start_range * current_delta
-            new_stop_range = current_start_range + symbol_stop_range * current_delta
-
-            current_range = (new_start_range, new_stop_range)
-
-            content += symbol
+            content.append(new_symbol)
+            current_range = new_range
 
         return content

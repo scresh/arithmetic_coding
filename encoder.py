@@ -1,7 +1,5 @@
 from fractions import Fraction
-import itertools as it
 import math
-from functools import reduce
 
 
 class ArithmeticEncoder:
@@ -95,5 +93,4 @@ class ArithmeticEncoder:
 
             current_range = (new_start_range, new_stop_range)
 
-        symbols_ranges = sorted([x for x in symbols_ranges.items()], key=lambda x: x[0][0])
         return current_range[0], len(self.content), symbols_ranges
