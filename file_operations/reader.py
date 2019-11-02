@@ -5,40 +5,27 @@ class FileReader:
     def __init__(self, filename):
         self.file = open(filename, 'rb')
 
+    def _read_int(self, precision):
+        return int.from_bytes(self.file.read(precision), byteorder='big')
+
     def read(self):
-        symbol_count = int.from_bytes(self.file.read(1), byteorder='big') + 1
+        symbol_count = self._read_int(1) + 1
+        symbols = [self._read_int(1) for _ in range(symbol_count)]
 
-        symbols = []
+        symbol_range_precision = self._read_int(1)
+        denominator = 2 ** (8 * symbol_range_precision)
 
-        for _ in range(symbol_count):
-            symbols.append(int.from_bytes(self.file.read(1), byteorder='big'))
+        numerators = [self._read_int(symbol_range_precision) for _ in range(symbol_count)]
+        ranges = [Fraction(numerator, denominator) for numerator in numerators] + [Fraction(1, 1)]
 
-        symbol_range_precision = int.from_bytes(self.file.read(1), byteorder='big')
+        symbol_ranges = {symbols[i]: (ranges[i], ranges[i+1]) for i in range(symbol_count)}
 
-        ranges_start = []
-        for _ in range(symbol_count):
-            range_start = Fraction(
-                int.from_bytes(self.file.read(symbol_range_precision), byteorder='big'),
-                2 ** (8 * symbol_range_precision)
-            )
-            ranges_start.append(range_start)
+        length_precision = self._read_int(1)
+        length = self._read_int(length_precision)
 
-        ranges_start.append(Fraction(1, 1))
-
-        symbol_ranges = {}
-
-        for i in range(symbol_count):
-            symbol = symbols[i]
-            symbol_range_start = ranges_start[i]
-            symbol_range_end = ranges_start[i+1]
-            symbol_ranges[symbol] = (symbol_range_start, symbol_range_end)
-
-        length_precision = int.from_bytes(self.file.read(1), byteorder='big')
-        length = int.from_bytes(self.file.read(length_precision), byteorder='big')
-
-        numerator_precision_precision = int.from_bytes(self.file.read(1), byteorder='big')
-        numerator_precision = int.from_bytes(self.file.read(numerator_precision_precision), byteorder='big')
-        numerator_normalized = int.from_bytes(self.file.read(numerator_precision), byteorder='big')
+        numerator_precision_precision = self._read_int(1)
+        numerator_precision = self._read_int(numerator_precision_precision)
+        numerator_normalized = self._read_int(numerator_precision)
 
         content_fraction = Fraction(numerator_normalized, 2 ** (8 * numerator_precision))
 
