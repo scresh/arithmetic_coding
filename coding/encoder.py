@@ -1,4 +1,5 @@
 from fractions import Fraction
+from tqdm import tqdm
 import math
 
 
@@ -80,7 +81,7 @@ class ArithmeticEncoder:
 
         current_range = (Fraction(0, 1), Fraction(1, 1))
 
-        for c in self.content:
+        for c in tqdm(self.content, desc='Encoding'):
             symbol_range_start, symbol_range_stop = symbols_ranges[c]
 
             current_range_start, current_range_end = current_range

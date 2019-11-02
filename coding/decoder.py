@@ -1,4 +1,5 @@
 from fractions import Fraction
+from tqdm import trange
 
 
 class ArithmeticalDecoder:
@@ -24,7 +25,7 @@ class ArithmeticalDecoder:
         content = bytearray()
         current_range = (Fraction(0, 1), Fraction(1, 1))
 
-        for _ in range(self.content_length):
+        for _ in trange(self.content_length, desc='Decoding'):
             new_symbol, new_range = self.get_new_pair(current_range)
 
             content.append(new_symbol)
