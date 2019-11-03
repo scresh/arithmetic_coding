@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import argparse
 from coding.encoder import ArithmeticEncoder
 from coding.decoder import ArithmeticalDecoder
@@ -8,6 +9,7 @@ from file_operations.writer import FileWriter
 
 
 def compress(file_in, file_out):
+    print(f'Input file size: {os.stat(file_in).st_size}')
     with open(file_in, 'rb') as f:
         content = f.read()
 
@@ -16,9 +18,11 @@ def compress(file_in, file_out):
 
     fw = FileWriter(file_out)
     fw.write(content_fraction, length, symbols_ranges)
+    print(f'Output file size: {os.stat(file_out).st_size}')
 
 
 def decompress(file_in, file_out):
+    print(f'Input file size: {os.stat(file_in).st_size}')
     fr = FileReader(file_in)
     content_fraction, length, symbols_ranges = fr.read()
 
@@ -27,6 +31,8 @@ def decompress(file_in, file_out):
 
     with open(file_out, 'wb') as f:
         f.write(decoded_content)
+    print(f'Output file size: {os.stat(file_out).st_size}')
+
 
 
 def main():

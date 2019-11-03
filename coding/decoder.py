@@ -1,5 +1,6 @@
 from fractions import Fraction
 from tqdm import trange
+from hashlib import md5
 
 
 class ArithmeticalDecoder:
@@ -30,5 +31,8 @@ class ArithmeticalDecoder:
 
             content.append(new_symbol)
             current_range = new_range
+
+        content_md5 = md5(content).hexdigest()
+        print(f'Input file MD5 sum: {content_md5}')
 
         return content

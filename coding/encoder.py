@@ -1,5 +1,6 @@
 from fractions import Fraction
 from tqdm import tqdm
+from hashlib import md5
 import math
 
 
@@ -77,6 +78,8 @@ class ArithmeticEncoder:
         return symbol_ranges
 
     def encode(self):
+        content_md5 = md5(self.content).hexdigest()
+        print(f'Input file MD5 sum: {content_md5}')
         symbols_ranges = self.get_symbols_ranges()
 
         current_range = (Fraction(0, 1), Fraction(1, 1))
