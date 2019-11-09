@@ -25,8 +25,8 @@ class FileWriter:
         for symbol in symbols_ranges.keys():
             self._write_int(symbol, 1)
 
-    def _write_ranges(self, symbols_ranges):
-        ranges_start = [x[0] for x in symbols_ranges.values()]
+    def _write_ranges_start(self, symbols_dict):
+        ranges_start = [x[0] for x in symbols_dict.values()]
         symbol_range_precision = self._get_precision((1 - ranges_start[-1]).denominator)
         self._write_int(symbol_range_precision, 1)
 
@@ -49,9 +49,9 @@ class FileWriter:
         self._write_int(numerator_precision, numerator_precision_precision)
         self._write_int(numerator_normalized, numerator_precision)
 
-    def write(self, content_fraction, content_length, symbols_ranges):
-        self._write_symbols(symbols_ranges)
-        self._write_ranges(symbols_ranges)
+    def write(self, content_fraction, content_length, symbols_dict):
+        self._write_symbols(symbols_dict)
+        self._write_ranges_start(symbols_dict)
         self._write_content_length(content_length)
         self._write_content_fraction(content_fraction)
         self.file.close()

@@ -14,25 +14,24 @@ def compress(file_in, file_out):
         content = f.read()
 
     ae = ArithmeticEncoder(content)
-    content_fraction, length, symbols_ranges = ae.encode()
+    content_fraction, length, symbols_dict = ae.encode()
 
     fw = FileWriter(file_out)
-    fw.write(content_fraction, length, symbols_ranges)
+    fw.write(content_fraction, length, symbols_dict)
     print(f'Output file size: {os.stat(file_out).st_size}')
 
 
 def decompress(file_in, file_out):
     print(f'Input file size: {os.stat(file_in).st_size}')
     fr = FileReader(file_in)
-    content_fraction, length, symbols_ranges = fr.read()
+    content_fraction, length, symbols_dict = fr.read()
 
-    ad = ArithmeticalDecoder(content_fraction, length, symbols_ranges)
+    ad = ArithmeticalDecoder(content_fraction, length, symbols_dict)
     decoded_content = ad.decode()
 
     with open(file_out, 'wb') as f:
         f.write(decoded_content)
     print(f'Output file size: {os.stat(file_out).st_size}')
-
 
 
 def main():
