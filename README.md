@@ -49,3 +49,6 @@ optional arguments:
 [contributors-url]: https://github.com/scresh/arithmetic_coding/graphs/contributors
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/emanuel-zarzecki/
+
+
+<div>Header icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
