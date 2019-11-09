@@ -1,6 +1,7 @@
 from bisect import bisect_right
 from tqdm import trange
 from hashlib import md5
+from termcolor import cprint
 
 
 class ArithmeticalDecoder:
@@ -27,6 +28,6 @@ class ArithmeticalDecoder:
             content.append(new_symbol)
 
         content_md5 = md5(content).hexdigest()
-        print(f'Input file MD5 sum: {content_md5}')
+        cprint(f'Output file MD5 sum: {content_md5}', 'yellow')
 
         return content

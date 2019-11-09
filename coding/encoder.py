@@ -1,5 +1,6 @@
 from fractions import Fraction
 from tqdm import tqdm
+from termcolor import cprint
 from hashlib import md5
 import math
 
@@ -77,7 +78,7 @@ class ArithmeticEncoder:
 
     def encode(self):
         content_md5 = md5(self.content).hexdigest()
-        print(f'Input file MD5 sum: {content_md5}')
+        cprint(f'Input file MD5 sum: {content_md5}', 'yellow')
         symbols_dict = self.get_symbols_dict()
 
         current_range_start = Fraction(0, 1)
