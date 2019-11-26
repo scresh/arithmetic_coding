@@ -19,7 +19,7 @@
 
 App created as a student project work for Data Compression course at the Warsaw University of Technology.
 
-Due to the use of fraction module in computing, the performance tends to be slow for larger files.
+Due to the use of fractions module in computing, the performance tends to be slow for larger files.
 
 ## Usage
 
